@@ -1,0 +1,29 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>糖果收纳所 · Canvas 本地预览</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#e5dfd1}canvas{display:block;width:min(100vw,56.22vh);height:100vh;margin:auto;touch-action:none}#error{position:fixed;top:0;color:#a00;white-space:pre-wrap}</style><body><canvas id="game"></canvas><pre id="error"></pre><script>
+(async()=>{
+ const sources={},cache={};
+ const files=['game.js','utils/canvas-game.js','utils/controller.js','utils/engine.js','utils/levels.js','utils/level-plan.js','utils/input.js','utils/rating.js'];
+ await Promise.all(files.map(async f=>{sources[f]=await(await fetch('/'+f)).text();}));
+ const canvas=document.querySelector('canvas');let touch,resize;
+ window.wx={
+  createCanvas:()=>canvas,
+  getWindowInfo:()=>({windowWidth:canvas.getBoundingClientRect().width,windowHeight:innerHeight,pixelRatio:devicePixelRatio,statusBarHeight:20,safeArea:{bottom:innerHeight-20}}),
+  getMenuButtonBoundingClientRect:()=>({bottom:55}),
+  getStorageSync:key=>JSON.parse(localStorage.getItem(key)||'null'),setStorageSync:(key,value)=>localStorage.setItem(key,JSON.stringify(value)),
+  onTouchEnd:fn=>{touch=fn;},onWindowResize:fn=>{resize=fn;},
+  onHide:fn=>document.addEventListener('visibilitychange',()=>{if(document.hidden)fn();}),
+  onShow:fn=>document.addEventListener('visibilitychange',()=>{if(!document.hidden)fn();}),
+  showModal:opts=>opts.success({confirm:confirm(opts.title+'\n'+opts.content)})
+ };
+ function load(file){
+  if(!file.endsWith('.js'))file+='.js';
+  if(cache[file])return cache[file].exports;
+  if(!sources[file])throw Error('Missing JavaScript module: '+file);
+  const module={exports:{}};cache[file]=module;
+  const require=request=>{const segments=file.split('/');segments.pop();for(const part of request.split('/')){if(part==='..')segments.pop();else if(part!=='.')segments.push(part);}return load(segments.join('/'));};
+  new Function('require','module','exports','wx',sources[file])(require,module,module.exports,wx);return module.exports;
+ }
+ window.previewGame=load('utils/canvas-game.js').startGame(wx);
+ canvas.addEventListener('pointerup',e=>touch&&touch({changedTouches:[{clientX:e.clientX-canvas.getBoundingClientRect().left,clientY:e.clientY}]}));
+ addEventListener('resize',()=>resize&&resize());
+})().catch(error=>{document.querySelector('#error').textContent=error.stack;console.error(error);});
+</script></body></html>

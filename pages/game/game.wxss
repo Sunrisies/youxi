@@ -1,0 +1,5 @@
+page{width:100%;height:100%;overflow:hidden;background:#f8f1e3}
+.game-canvas{display:block;width:100vw;height:100vh}
+.native-hit{position:fixed;z-index:2;background:transparent}
+.notice{position:fixed;left:24rpx;right:24rpx;top:42%;text-align:center;color:#7a8864;font-size:28rpx;pointer-events:none}
+.error{color:#a9584d;line-height:1.8}

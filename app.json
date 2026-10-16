@@ -1,0 +1,5 @@
+{
+  "pages": ["pages/game/game"],
+  "window": {"navigationStyle": "custom", "backgroundColor": "#f8f1e3", "backgroundTextStyle": "dark"},
+  "style": "v2"
+}

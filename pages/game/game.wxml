@@ -1,0 +1,4 @@
+<canvas type="2d" id="gameCanvas" class="game-canvas" bindtouchstart="touchStart" bindtouchend="touchEnd" bindtouchcancel="touchCancel" bindtap="tap" disable-scroll="{{true}}"></canvas>
+<view wx:for="{{targets}}" wx:key="id" class="native-hit" style="left:{{item.left}}px;top:{{item.top}}px;width:{{item.width}}px;height:{{item.height}}px" data-hit="{{item.id}}" data-revision="{{revision}}" data-label="{{item.label}}" bindtap="activate" aria-role="button" aria-label="{{item.label}}"></view>
+<view wx:if="{{loading}}" class="notice">正在打开糖果收纳所…</view>
+<view wx:if="{{error}}" class="notice error">{{error}}</view>
